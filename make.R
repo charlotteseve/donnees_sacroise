@@ -25,4 +25,5 @@
 # Titre projet
 # Description projet
 
+load_data()
 
