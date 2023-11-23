@@ -10,8 +10,9 @@
 # usethis::use_readme_md()
 
 # Create compendium folders
-# lapply(c("data", "R", "analyses", "outputs", "data/notebook", "data/sacrois", "analyses/pipeline"), # elements I want to apply the function to
-#       dir.create, showWarnings = FALSE) # the function
+#lapply(c("data", "R", "analyses","analyses/pipeline", "outputs", "data/notebook", "data/sacrois"), # elements I want to apply the function to
+#      dir.create, showWarnings = FALSE) # the function
+
 
 # Use renv with DESCRIPTION file (explicit use of renv)
 # renv::init()
