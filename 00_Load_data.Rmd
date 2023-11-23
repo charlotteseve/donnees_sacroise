@@ -20,13 +20,13 @@ library(ggplot2)
 
 2. Open Dataframes
 ```{r}
-df_obsDeb <-fread('data/SACROIS_obsDeb_Sars_2018_2022_GSA07.csv', 
+df_obsDeb <-fread('data/sacrois/SACROIS_obsDeb_Sars_2018_2022_GSA07.csv', 
                  h=T, sep=';', dec='.', encoding="UTF-8")
-df_effDeb <-fread('data/SACROIS_obsDeb_effort_Sars_2018_2022_GSA07.csv', 
+df_effDeb <-fread('data/sacrois/SACROIS_obsDeb_effort_Sars_2018_2022_GSA07.csv', 
                  h=T, sep=';', dec='.')
-df_ANNEE_TEMP <-fread('data/ANNEE_TRIM_TEMPS.csv', 
+df_ANNEE_TEMP <-fread('data/sacrois/ANNEE_TRIM_TEMPS.csv', 
                  h=T, sep=';', dec='.')
-ports_long <-fread('data/ports_long.csv', 
+ports_long <-fread('data/sacrois/ports_long.csv', 
                  h=T, sep=';', dec='.')
 
 ```
