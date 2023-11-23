@@ -22,7 +22,8 @@
 # options(renv.download.override = utils::download.file)
 
 # Create R functions in the R repository
-# usethis::use_r("XXXX")
+# usethis::use_r("load_data")
+# usethis::use_r("change_encoding")
 
 
 # Development commands----
@@ -31,12 +32,25 @@
 # renv::install() 
 # renv::snapshot(prompt = FALSE)
 
+# Scan r files and complete import section of DESCRIPTION
+## ren the 3 following lines
+#renv::deactivate()
+#rcompendium::add.dependencies()
+#renv::activate()
+
 
 
 # workflow ----
 
+devtools::load_all(here::here())
 
-# Titre projet
-# Description projet
+# Configure target for this project
+targets::tar_config_set(script = "analyses/pipeline.R",
+                        store = "outputs/pipeline")
 
+targets::tar_visnetwork(targets_only = TRUE)
+targets::tar_make()
+
+
+load_data()
 
