@@ -52,4 +52,5 @@ targets::tar_visnetwork(targets_only = TRUE)
 targets::tar_make()
 
 
+load_data()
 
