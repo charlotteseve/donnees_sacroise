@@ -1,12 +1,8 @@
-change_encoding <- function(){
+change_encoding <- function(dataframe){
   
-  df_obsDeb <-read.csv2('data/sacrois/SACROIS_obsDeb_Sars_2018_2022_GSA07.csv')
-  
-  df_effDeb <-read.csv2('data/sacrois/SACROIS_obsDeb_effort_Sars_2018_2022_GSA07.csv')
-  
-  df_ANNEE_TEMP <-read.csv2('data/sacrois/ANNEE_TRIM_TEMPS.csv')
-  
-  ports_long <-read.csv2('data/sacrois/ports_long.csv')
+  dataframe[,2:13] <- as.data.frame (apply(dataframe[,2:13], 2, function(colonne){
+    colonne <- iconv(colonne, from = "UTF-8", to = "LATIN1")
+    return(colonne)}) )
   
   
 }
