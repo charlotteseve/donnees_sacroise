@@ -1,0 +1,444 @@
+---
+title: "01_Plots"
+author: "CS"
+date: "2023-07-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1. Load Packages
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(data.table) #fread function
+library(ggplot2)
+```
+
+2. Thème graphique 
+```{r}
+chacha_theme <- function() {
+  theme_bw() %+replace% # Changer un aspect du theme_bw
+  theme(
+    #Legend
+    legend.position="bottom", legend.box = "vertical",
+  )
+}
+
+theme_set(chacha_theme())
+```
+
+3. Load dataframes
+```{r}
+load(file = "data/df_obsDeb.RData")
+load(file = "data/df_effDeb.RData")
+load(file = "data/df_ANNEE_TEMP.RData")
+```
+
+4. Add MET variable
+```{r}
+# Vecteur avec les métiers d'intérêt
+vect_MET <- c("GNC", "GNS", "GTN", "GTR", "LLS", "LN", "OTB", "OTT")
+
+# Ajout d'une colonne Met avec les métiers 
+df_obsDeb <- df_obsDeb %>% 
+  mutate(MET = substr(METIER_DCF_5_COD, start = 1, stop = 3))
+
+# On garde les métiers d'intérêt dans MET
+df_obsDeb = df_obsDeb  %>% 
+  mutate(MET = ifelse(MET %in% vect_MET, MET, "Autre")) 
+# si MET est dans Vect, alors on met MET --> sinon on met "Autre"
+
+unique(df_obsDeb$MET) # vérification
+
+```
+5. Zone definition : PNMGL, MARSEILLE, TOULON
+```{r}
+# Coordonnées géographiques du parc
+latitude_min_parc <- 42.480 
+latitude_max_parc <- 42.885
+longitude_min_parc <- 3.051
+longitude_max_parc <- 3.134
+
+# Coordonnées géographiques de la zone Marseille du modèle
+latitude_min_marseille <- 43.199
+latitude_max_marseille <- 43.354
+longitude_min_marseille <- 3.051
+longitude_max_marseille <- 5.282
+
+
+```
+
+
+6. Port filtration
+```{r eval=FALSE, include=FALSE}
+# Création d'un DataFrame avec les coordonnées des ports
+ports <- data.frame(
+  Port_Lib = c("Etang de Bages-Sigean, Peyriac de mer", "Etang de Salse-Leucate, Port BarcarÃ¨s", "Canet-en-Roussillon", "Saint-Cyprien", "Port St Ange", "Etang de Bages-Sigean, Bages", "Port-la-Nouvelle", "Port-Leucate", "Etang de Salse-Leucate, Salse - la Rouquette", "Grau de Leucate", "ArgelÃ¨s-sur-Mer, Le Racou", "Etang de l'Ayrolle", "Gruissan", "Port-Vendres", "Banyuls-sur-Mer", "Narbonne Plage", "HyÃ¨res, St Pierre sur mer", "Les Cabanes de Fleury", "Valras-Plage", "Grau d'Agde", "Cap d'Agde", "Etang de Thau, Marseillan", "Marseillan-plage", "Etang de Thau, Pte Courte, Barrou, Zup", "Etang de Thau, MÃ¨ze, le Mourre Blanc", "Frontignan", "Etang de Thau, Bouzigues", "Etang de Thau, Balaruc", "SÃ¨te-Mole et canaux", "Etangs de Vic, Moures, Arnel, PrÃ©vost, P. Blanches", "Etang d'Ingril, Les Aresquiers", "Palavas-les-Flots", "Etang de Mauguio, Cabanes de PÃ©rols,Mauguio", "Etang de Mauguio, Cabanes de Lunel", "Carnon-Plage", "Le-Grau-du-Roi", "Saintes-Maries-de-la-Mer, Port Cardian", "Darse de l'AmarrÃ©e et port Dromar", "Cabanes de Beauduc", "Les Salins de Giraud", "Port-Saint-Louis-du-RhÃ´ne", "Fos sur Mer, port St Gervais", "Port-de-Bouc, Anse Aubran", "Martigues", "Etang de Berre, Istres -les heures Claires", "Anse des laurons", "Carro", "Etang de Berre, Saint-Chamas", "Port de Carteau", "Sausset-les-Pins", "Etang de Berre, La MÃ¨de", "Etang de Berre, Port de Sagnas", "Carry-le-Rouet", "Etang de Berre, Port du JaÃ¯ (Marignane)", "La Redonne, MÃ©jean", "Etang de Berre, Berre - Port de passet", "L'Estaque", "Saumaty", "Port des Goudes", "Vallon des Auffes", "La Madrague de Montredon", "Vieux Port de Marseille", "Port de Morgiou", "Cassis", "La Ciotat", "St Cyr sur mer, la Madrague", "Bandol", "Le Brusc (Six-Fours-les-Plages)", "Sanary-sur-Mer", "Port de la CoudouliÃ¨re", "La Seyne-sur-Mer", "St Elme", "St Mandrier sur mer", "Toulon", "Port St Louis du Mourillon", "Port des OursiniÃ¨res", "Carqueiranne, les salettes", "Giens, la Madrague", "Giens, Ports du Niel, de la Tour Fondue", "Port de l'Ayguade", "Port de Porquerolles (Ile de)", "Salins d'HyÃ¨res, Pothuau", "La Londe des Maures, Miramar", "Port de Bormes les Mimosas, La FaviÃ¨re", "Le Lavandou", "Cavalaire sur Mer", "Les Marines de Cogolin et Port Grimaud", "Saint-Tropez, vieux port", "Ste Maxime", "San Peire, la Garonnette", "FrÃ©jus", "Saint-RaphaÃ«l, vieux port", "Drammont, la Poussai", "Agay", "La Figueirette", "Cannes, NourÃ©e Rouge", "ThÃ©oule", "La Rague", "Mandelieu-La Napoule", "La GalÃ¨re", "Cannes, vieux port", "Golfe Juan (Vallauris)", "Juan les Pins", "Port de Crouton", "Port Vauban", "Antibes, tous les ports", "Villeneuve Loubet", "Cros de Cagnes", "Nice", "Villefranche-sur-Mer, tous les ports", "Villefranche, Port de la SantÃ©", "St Jean Cap Ferrat", "Baulieu", "Beaulieu-sur-mer", "Menton, vieux port, Garavan", "Sagone"),
+  Latitude = c(43.09004663790197,42.85834886605678,42.704107466237936,42.622102614347654,42.80085608969058,42.86634087283263,43.02751156393313,42.86797171073957,42.886811993462196,42.88565773522927,42.53839890398943,43.08048560304059,43.102271147136335,42.51625073736771,42.480604002507555,43.16210922068503,43.17036111802681,43.21765147227679,43.255301464932806,43.292513261327905,43.27311009850569,43.35315362518123,43.31788566607066,43.37415055896933,43.40495938168261,43.4264985237781,43.44648425805594,43.44463174117374,43.39619746736053,43.49591933927565,43.46670486843967,43.5249626110809,43.57138338581619,43.54845725093068,43.54468727681508,43.51442986261692,43.44946346462311,43.44874414018038,43.39791458859817,43.4018608458858,43.38655758927952,43.43048030420438,43.40390202262776,43.39171742015577,43.49803404384787,43.35349195147067,43.33039627369745,43.52123295381873,43.40310845926163,43.33089649757706,43.401223410718124,43.51478301265421,43.330406811146084,43.45049166517482,43.33309842379497,43.449867264239124,43.36062140769227,43.35596121968268,43.21582004076915,43.28557510986209,43.23258154456255,43.29574437112065,43.212230072309325,43.214427663900025,43.17791271488653,43.165984407270614,43.1328577449555,43.07462143646244,43.11655620346088,43.096568438273174,43.10326867658176,43.07581109042168,43.07957260773927,43.11910003404463,43.107207202538405,43.08508574286946,43.0873789085162,43.039980163707845,43.03611381965192,43.10300021064998,43.003344934728325,43.116557248731276,43.116878753537804,43.123755948860364,43.137291951704555,43.17279253253656,43.26544614434702,43.27342312677777,43.30629598977191,43.34545738318963,43.42105232882219,43.42334528706193,43.4144648745868,43.434545906843276,43.484132905253375,43.534802447944394,43.5084832880242,43.517386747146986,43.52527654876287,43.49798198724996,43.55020821561252,43.565394726683586,43.56200326243353,43.560514416738634,43.585557329551314,43.58945813191868,43.63430242480236,43.65681878664869,43.69637898132911,43.698313335248045,43.70324501127696,43.690195557665426,43.70874341983213,43.709043152078586,43.783496103621246,42.1705824467536),
+  Longitude = c(2.9624588776254486, 2.9945589871991984, 3.0346990920477133, 3.0362996944051823, 3.0370782829879315,
+                3.0429010288630125, 3.0433958122528946, 3.0437530067656025, 3.0499863617607104, 3.0518427475456713,
+                3.0555824454688905, 3.0676279871704515, 3.0941644489242446, 3.106625278731626, 3.134585044343745,
+                3.168136830950558, 3.1822180917358303, 3.2305192841170505, 3.298222505105864, 3.4475484530056675,
+                3.508695721605676, 3.5342777811937354, 3.557346441951772, 3.5696957055924807, 3.578205626504805,
+                3.6043896897778858, 3.6596708407882015, 3.6803182223743094, 3.6983725277532438, 3.805761699750674,
+                3.814507428870776, 3.9325587606423733, 3.9718538783592554, 3.9720653631618457, 3.9729679149966812,
+                4.13793579511688, 4.421743249614847, 4.422844853613514, 4.5956922483242435, 4.725601491088287,
+                4.80546470578701, 4.94227319181266, 4.9828989941836115, 4.9899151102592585, 4.999265890631193,
+                5.0236869085124365, 5.04098874205576, 5.046484346794098, 5.06234875590694, 5.107809041684058,
+                5.111435833708124, 5.117948860970542, 5.152621371127492, 5.195522473717517, 5.199519366397772,
+                5.2064555855338845, 5.3126354443208905, 5.326780984543669, 5.34573176456313, 5.350478920105706,
+                5.353495792475596, 5.364686582993325, 5.444112763974923, 5.537441169103278, 5.611217307741756,
+                5.693054042272154, 5.752665192128618, 5.800327360597263, 5.801415878836162, 5.811946997169577,
+                5.882179753656943, 5.8993192711410565, 5.907421889021715, 5.932789623776464, 5.936291433327194,
+                6.019603546636143, 6.076478771136752, 6.109816028857303, 6.12624443557605, 6.17063280542164,
+                6.200819795803714, 6.201982391792358, 6.248345432994925, 6.365637680873947, 6.371310215449801,
+                6.536558177521821, 6.5881277762088475, 6.6382698207093, 6.639131006444342, 6.7030906502956915,
+                6.747931714810674, 6.765036708798159, 6.8481706508263755, 6.8636169314144375, 6.934142942276052,
+                6.936961550986622, 6.9388340061341, 6.939708265967202, 6.944001474924637, 6.955356816132749,
+                7.014679468713283, 7.072256776239477, 7.11622484493295, 7.119258015469711, 7.127094374606244,
+                7.129230065994987, 7.1397378242254135, 7.171744077583272, 7.28513882966636, 7.307841764604726,
+                7.311873961645669, 7.333317302047908, 7.336725862961027, 7.337499542897825, 7.5147812935590546,
+                8.677677672276957)
+)
+
+# Filtrer les ports situés dans la zone du parc
+ports_dans_parc <- ports[ports$Latitude >= latitude_min_parc & ports$Latitude <= latitude_max_parc & ports$Longitude >= longitude_min_parc & ports$Longitude <= longitude_max_parc, ]
+
+# Afficher les ports situés dans le parc
+print(ports_dans_parc)
+
+df_zones <- data.frame(
+  Zone = c("PNMGL", "PNMGL", 
+           "Toulon", 
+           "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille", "Marseille"),
+  PORT_EXP_LIB = c("ArgelÃ¨s-sur-Mer, Le Racou", "Port-Vendres", 
+                   "Toulon", 
+                   "Les Cabanes de Fleury", "Valras-Plage", "Grau d'Agde", "Cap d'Agde", "Etang de Thau, Marseillan", "Marseillan-plage", "Anse des laurons", "Carro", "Sausset-les-Pins", "Carry-le-Rouet", "La Redonne, MÃ©jean")
+)
+
+df_obsDeb = left_join(df_obsDeb, df_zones)
+```
+
+
+7. Supprimer les etangs
+```{r}
+# Supprimer les lignes où PORT_EXP_LIB contient le mot "Etang"
+df_obsDeb <- df_obsDeb[!grepl("Etang", df_obsDeb$PORT_EXP_LIB), ]
+
+
+#port_name$port_name = as.factor(port_name$port_name)
+#valeurs_manquantes_port_name <- setdiff(df_obsDeb$PORT_EXP_LIB, port_name$port_name)
+#print(valeurs_manquantes_port_name)    
+
+# Mettre à jour les niveaux de facteurs
+# ATTENTION ORDRE OUEST EST A REVOIR
+df_obsDeb$PORT_EXP_LIB <- factor(df_obsDeb$PORT_EXP_LIB, levels = c(
+  "Sagone",
+  "Banyuls-sur-Mer",
+  "Port-Vendres",
+  "Argelès-sur-Mer, Le Racou",
+  "Saint-Cyprien",
+  "Canet-en-Roussillon",
+  "Port St Ange",
+  "Port-Leucate",
+  "Grau de Leucate",
+  "Port de Porquerolles (Ile de)",
+  "Port-la-Nouvelle",
+  "Giens, Ports du Niel, de la Tour Fondue",
+  "Giens, la Madrague",
+  "Le Brusc (Six-Fours-les-Plages)",
+  "St Elme",
+  "St Mandrier sur mer",
+  "Port des Oursinières",
+  "Port de la Coudoulière",
+  "Gruissan",
+  "Port de l'Ayguade",
+  "La Seyne-sur-Mer",
+  "Sanary-sur-Mer",
+  "Salins d'Hyères, Pothuau",
+  "La Londe des Maures, Miramar",
+  "Toulon",
+  "Port de Bormes les Mimosas, La Favière",
+  "Bandol",
+  "Le Lavandou",
+  "Hyères, St Pierre sur mer",
+  "Carqueiranne, les salettes",
+  "St Cyr sur mer, la Madrague",
+  "Narbonne Plage",
+  "Cavalaire sur Mer",
+  "La Ciotat",
+  "Port de Morgiou",
+  "Cassis",
+  "Port des Goudes",
+  "Les Cabanes de Fleury",
+  "La Madrague de Montredon",
+  "Valras-Plage",
+  "Les Marines de Cogolin et Port Grimaud",
+  "Cap d'Agde",
+  "Saint-Tropez, vieux port",
+  "Vallon des Auffes",
+  "Grau d'Agde",
+  "Vieux Port de Marseille",
+  "Ste Maxime",
+  "Marseillan-plage",
+  "Carro",
+  "Carry-le-Rouet",
+  "Sausset-les-Pins",
+  "La Redonne, Méjean",
+  "San Peire, la Garonnette",
+  "Anse des laurons",
+  "Saumaty",
+  "L'Estaque",
+  "Port-Saint-Louis-du-Rhône",
+  "Martigues",
+  "Sète-Mole et canaux",
+  "Cabanes de Beauduc",
+  "Les Salins de Giraud",
+  "Port de Carteau",
+  "Port-de-Bouc, Anse Aubran",
+  "Drammont, la Poussai",
+  "Fréjus",
+  "Saint-Raphaël, vieux port",
+  "Frontignan",
+  "Fos sur Mer, port St Gervais",
+  "Agay",
+  "Darse de l'Amarrée et port Dromar",
+  "Saintes-Maries-de-la-Mer, Port Cardian",
+  "La Figueirette",
+  "La Galère",
+  "Théoule",
+  "Le-Grau-du-Roi",
+  "La Rague",
+  "Palavas-les-Flots",
+  "Mandelieu-La Napoule",
+  "Cannes, Nourée Rouge",
+  "Carnon-Plage",
+  "Cannes, vieux port",
+  "Port de Crouton",
+  "Juan les Pins",
+  "Golfe Juan (Vallauris)",
+  "Port Vauban",
+  "Antibes, tous les ports",
+  "Villeneuve Loubet",
+  "Cros de Cagnes",
+  "St Jean Cap Ferrat",
+  "Nice",
+  "Villefranche-sur-Mer, tous les ports",
+  "Villefranche, Port de la Santé",
+  "Baulieu",
+  "Beaulieu-sur-mer",
+  "Menton, vieux port, Garavan"
+))
+
+
+```
+
+8. Graphiques
+
+8.1. Debarquements (tonnes) par Anne > trimestre > taxon > LOA (classe taille bateau, CLASSE_TAILLE)
+```{r}
+## Create dataframe
+df_Debs_LOA <- df_obsDeb %>% 
+  group_by(TEMPS, ESP_LIB_FAO, CLASSE_TAILLE) %>% # PAR TRIMESTRE
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+## Create plot
+ggplot(df_Debs_LOA, #%>% filter(CLASSE_TAILLE=="VL0006")
+       #%>% filter(ESP_LIB_FAO=="Sar commun"),
+       aes(x = TEMPS, y= Deb_tonnes)) +
+  geom_line(aes(colour=ESP_LIB_FAO))+
+  geom_point(aes(colour=ESP_LIB_FAO))+
+  facet_wrap(~CLASSE_TAILLE, nrow = 2) +
+  ## Labelling
+  labs(title="Debarquements par an, trimestre, taxons, LOA\n", 
+       y="Debarquements (tonnes)\n", 
+       x="Trimestre")
+
+```
+
+
+8.2. Debarquements (tonnes) par annee > trimestre > taxon > engin (GNC, GNS, GNT, GTR, LLS, LN, OTB, OTT, Autres)
+```{r}
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_MET <- df_obsDeb %>% 
+  group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+## Create plot
+ggplot(df_debs_MET ,
+       aes(x = TEMPS, y= Deb_tonnes)) +
+  geom_line(aes(colour=ESP_LIB_FAO))+
+  geom_point(aes(colour=ESP_LIB_FAO))+
+  facet_wrap(~MET) +
+  ## Labelling
+  labs(title="Debarquements par trimestre, taxons, engins", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Trimestre")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+8.2. Debarquements (tonnes) par annee > trimestre > taxon > engin (GNC, GNS, GNT, GTR, LLS, LN, OTB, OTT, Autres)
+```{r}
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_TRIM <- df_obsDeb %>% 
+  group_by(TEMPS, ESP_LIB_FAO) %>% 
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+## Create plot
+ggplot(df_debs_TRIM ,
+       aes(x = TEMPS, y= Deb_tonnes)) +
+  geom_line(aes(colour=ESP_LIB_FAO))+
+  geom_point(aes(colour=ESP_LIB_FAO))+
+  #facet_wrap(~MET) +
+  ## Labelling
+  labs(title="Debarquements par trimestre, taxons", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Trimestre")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+
+8.2. Debarquements (tonnes) par annee > trimestre > taxon > engin (GNC, GNS, GNT, GTR, LLS, LN, OTB, OTT, Autres)
+```{r}
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_POR <- df_obsDeb %>% 
+  #group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+  group_by(ANNEE, ESP_LIB_FAO, PORT_EXP_LIB) %>% # captures totales (pas par métier)
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+## Create plot
+ggplot(df_debs_POR %>% filter(ESP_LIB_FAO=="Sar commun"),
+       aes(x = PORT_EXP_LIB, y= Deb_tonnes)) +
+  geom_bar(stat = "identity", aes(fill = PORT_EXP_LIB))+
+  facet_wrap(~ANNEE, ncol = 1) +
+  ## Labelling
+  labs(title="Debarquements de sar commun par an, par port", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="")+
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+
+8.3. Debarquements (tonnes) par annee > trimestre > taxon > engin (GNC, GNS, GNT, GTR, LLS, LN, OTB, OTT, Autres)
+```{r}
+
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_zone <- df_obsDeb %>% 
+  group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+  #group_by(ANNEE, ESP_LIB_FAO, Zone) %>% # captures totales (pas par métier)
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+df_debs_zone <- left_join(df_debs_zone, df_ANNEE_TEMP)
+
+## Create plot
+ggplot(df_debs_zone
+       %>% filter(ESP_LIB_FAO=="Sar commun")
+       %>% filter(Zone  %in% c("PNMGL", "Toulon", "Marseille")),
+       aes(x = Zone, y= Deb_tonnes)) +
+  geom_bar(stat = "identity", aes(fill = Zone))+
+  #geom_line(aes(colour=ESP_LIB_FAO))+
+  #geom_point(aes(colour=PORT_EXP_LIB))+
+  #facet_wrap(~ANNEE, nrow = 2) +
+  facet_wrap(~ANNEE, ncol = 1) +
+  ## Labelling
+  labs(title="Debarquements par an, trimestre, taxons, LOA", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Trimestre")+
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+8.4. 
+```{r}
+
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_MET_zone <- df_obsDeb %>% 
+  #group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+  group_by(ANNEE, ESP_LIB_FAO, MET, Zone) %>% # captures totales (pas par métier)
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+## Create plot
+ggplot(df_debs_MET_zone
+       %>% filter(ESP_LIB_FAO=="Sar commun")
+       %>% filter(Zone  %in% c("PNMGL", "Toulon", "Marseille")),
+       aes(x = Zone, y= Deb_tonnes)) +
+  geom_bar(stat = "identity", aes(fill = Zone))+
+  #geom_line(aes(colour=ESP_LIB_FAO))+
+  #geom_point(aes(colour=PORT_EXP_LIB))+
+  #facet_wrap(~ANNEE, nrow = 2) +
+  facet_wrap(~ANNEE, ncol = 1) +
+  ## Labelling
+  labs(title="Debarquements par an, trimestre, taxons, LOA", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Trimestre")+
+  theme(legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+
+
+8.5. 
+```{r}
+
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_AN <- df_obsDeb %>% 
+  #group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+  group_by(ANNEE, ESP_LIB_FAO) %>% # captures totales (pas par métier)
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+dodge <- position_dodge(width = 0.9)
+
+## Create plot
+ggplot(df_debs_AN,
+       aes(x = ANNEE, y= Deb_tonnes)) +
+  geom_bar(stat = "identity", position = position_dodge(), aes(fill = ESP_LIB_FAO) )+
+  #geom_point(aes(colour=ESP_LIB_FAO))+
+  #geom_line(aes(colour=ESP_LIB_FAO))+
+  #geom_point(aes(colour=PORT_EXP_LIB))+
+  ## Labelling
+  labs(title="Debarquements par an, par taxons", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Annee")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+
+
+8.6. 
+```{r}
+
+# Ajout d'une colonne Met avec les métiers d'intérêt
+df_debs_AN_MET <- df_obsDeb %>% 
+  #group_by(TEMPS, ESP_LIB_FAO, MET) %>% 
+  group_by(ANNEE, ESP_LIB_FAO, MET) %>% # captures totales (pas par métier)
+      summarize(Deb_tonnes = sum(CAPTURES_KG)/1000)
+
+dodge <- position_dodge(width = 0.9)
+
+## Create plot
+ggplot(df_debs_AN_MET,
+       aes(x = ANNEE, y= Deb_tonnes)) +
+  geom_bar(stat = "identity", position = position_dodge(), aes(fill = ESP_LIB_FAO) )+
+  facet_wrap(~MET, nrow = 2) +
+  ## Labelling
+  labs(title="Debarquements par an, par taxons, par métier", 
+       #subtitle="\nTest : Réseau connecté vs. Réseau non-connecté\n",
+       y="Debarquements (tonnes)\n", 
+       x="Annee")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=0.99))
+```
+
+
+
+
+
+
+
