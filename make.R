@@ -10,7 +10,7 @@
 # usethis::use_readme_md()
 
 # Create compendium folders
-# lapply(c("data", "R", "analyses", "outputs", "data/notebook", "data/sacrois"), # elements I want to apply the function to
+# lapply(c("data", "R", "analyses", "outputs", "data/notebook", "data/sacrois", "analyses/pipeline"), # elements I want to apply the function to
 #       dir.create, showWarnings = FALSE) # the function
 
 # Use renv with DESCRIPTION file (explicit use of renv)
@@ -21,7 +21,7 @@
 # options(renv.download.override = utils::download.file)
 
 # Create R functions in the R repository
-# usethis::use_r("load data")
+# usethis::use_r("XXXX")
 
 
 # Development commands----
