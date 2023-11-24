@@ -1,5 +1,7 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-change_encoding|function|d1b375a93815d297
-ld_data|function|e1220bd749bd89a3
+change_capture|function|b953721870747890|||||||||||||||
+change_encoding|function|d1b375a93815d297|||||||||||||||
+data|stem|0deef1106cc06603|768dbebb7a31c76e|8b75ec56a3c18155|1588979285||t19685.3664932413s|092e3a3a0222580e|872796|rds|local|vector|||0.15||
+data_clean|stem|5d4ea51ccac86845|4c77babe41ab423f|c249cd9e23be6391|207072666||t19685.3723379909s|e1a5ee130fbb674e|437838|rds|local|vector|||0.17|252 variables sont fournies pour remplacer 12 variables. NAs introduits lors de la conversion automatique|
+ld_data|function|257413347d6aa655|||||||||||||||
 raw_data|stem|201047b495084a9e|25b5293e226217d3|ef46db3751d8e999|-979620141||t19684.7181852665s|a44f74ecaf054496|60|rds|local|vector|||0||
-data|stem|79e7e5f6f97b56c7|768dbebb7a31c76e|375ce2c8da03af44|1588979285||t19684.7181899362s|385947135da201af|872758|rds|local|vector|||0.16||
