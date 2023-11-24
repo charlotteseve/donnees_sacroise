@@ -1,4 +1,4 @@
-change_capture <- function(dataframe, raw_data){
+change_capture <- function(dataframe, raw_data, temps){
   
   
   dataframe[,2:13] <- as.data.frame (apply(dataframe[,2:13], 2, function(colonne){
@@ -140,7 +140,7 @@ change_capture <- function(dataframe, raw_data){
     
   
     
-    return(dataframe)
+  
     
     
     
@@ -154,7 +154,10 @@ change_capture <- function(dataframe, raw_data){
   
   
   # Join data with annee
-  dataframe <- left_join(dataframe, annee)
+  dataframe$annee_mois <- paste0(dataframe$ANNEE, "_", dataframe$TRIMESTRE)
+  temps$annee_mois <- paste0(temps$ANNEE,"_",temps$TRIMESTRE)
+  
+  dataframe <- merge(dataframe, temps, by="annee_mois")
   
   return(dataframe)
   

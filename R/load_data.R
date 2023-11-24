@@ -13,7 +13,7 @@ ld_data <- function(raw_data){
     
     ports_long <- read.csv2('data/sacrois/ports_long.csv')
     
-    return(list(capture = df_obsDeb, effort = df_effDeb, annee = df_ANNEE_TEMP, ports = ports_long))
+    return(list(capture = df_obsDeb, effort = df_effDeb, annee_trim = df_ANNEE_TEMP, ports = ports_long))
     
   } # End sar_med
   
@@ -30,7 +30,7 @@ ld_data <- function(raw_data){
     
     return(list(capture = ,
                 effort =,
-                annee =,
+                annee_trim =,
                 ports =))
     
   } # End Dorade

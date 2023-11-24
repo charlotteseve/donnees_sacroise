@@ -25,6 +25,7 @@
 # usethis::use_r("load_data")
 # usethis::use_r("change_encoding")
 # usethis::use_r("metiers")
+# usethis::use_r("make_graph")
 
 
 # Development commands----
