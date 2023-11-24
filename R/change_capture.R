@@ -3,8 +3,10 @@
 #' @description 
 #' This function 
 #' - modify the encoding code from UTF-8 to LATIN1
-#' - change the class of variables (temporal variables to integers and 
+#' - changes the class of variables (temporal variables to integers and 
 #'   port variables to factors)
+#' - joins dataframe with annee to add TEMP variable
+#' For sar_med data, this functions also reorder the levels of factor port
 #'
 #' @param dataframe the sacrois dataframe loaded
 #' @param raw_data this parameters is used to specify particular operations
