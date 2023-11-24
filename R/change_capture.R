@@ -1,21 +1,36 @@
+#' Cleaning sacrois dataframe 
+#' 
+#' @description 
+#' This function 
+#' - modify the encoding code from UTF-8 to LATIN1
+#' - change the class of variables (temporal variables to integers and 
+#'   port variables to factors)
+#'
+#' @param dataframe the sacrois dataframe loaded
+#' @param raw_data this parameters is used to specify particular operations
+#' to make according to sar_med and dorade_med.
+#' For example, renaming and reordering port is done only for sar_deb
+#'
+#' @return
+#' This function returns a clean dataframe
+#' 
+#' 
 change_capture <- function(dataframe, raw_data){
   
-  
+  # Changing encoding
   dataframe[,2:13] <- as.data.frame (apply(dataframe[,2:13], 2, function(colonne){
-    colonne <- iconv(colonne, from = "UTF-8", to = "LATIN1")})) # Change encoding 
+    colonne <- iconv(colonne, from = "UTF-8", to = "LATIN1")})) 
   
-  
-  # In integer
+  # Changing temporal variable class to integer
   dataframe$TRIMESTRE <- as.integer(dataframe$TRIMESTRE)
   dataframe$ANNEE <- as.integer(dataframe$ANNEE)
   
+  # Changing port variable class to factor 
   dataframe$PORT_EXP_LIB = as.factor(dataframe$PORT_EXP_LIB)
-
   
-  # In factror
+  # For sar_med data, reordering port from Ouest to Est
   if(raw_data == "sar_med"){
-    
-    
+    # Changind order of levels 
     dataframe$PORT_EXP_LIB <- factor(dataframe$PORT_EXP_LIB, 
                                    levels = c(
                                      "Etang de Bages-Sigean, Peyriac de mer",
@@ -137,25 +152,18 @@ change_capture <- function(dataframe, raw_data){
                                    ))
     
     
-  
-    
     return(dataframe)
-    
-    
     
   } # End sar_med
   
   
+  # No treatment for ports with dorade_med data
   if(raw_data == "dorade_med"){
-    
     
   } # End dorade_med
   
-  
-  # Join data with annee
+  # Joining data with annee (adding TEMP variable)
   dataframe <- left_join(dataframe, annee)
-  
   return(dataframe)
   
-
 }
