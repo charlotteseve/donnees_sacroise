@@ -23,7 +23,8 @@
 
 # Create R functions in the R repository
 # usethis::use_r("load_data")
-# usethis::use_r("change_encoding")
+# usethis::use_r("change_capture")
+# usethis::use_r("change_effort")
 
 
 # Development commands----
