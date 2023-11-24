@@ -1,27 +1,39 @@
-change_capture <- function(data, raw_data){
+#' Cleaning sacrois dataframe 
+#' 
+#' @description 
+#' This function 
+#' - modify the encoding code from UTF-8 to LATIN1
+#' - changes the class of variables (temporal variables to integers and 
+#'   port variables to factors)
+#' - joins dataframe with annee to add TEMP variable
+#' For sar_med data, this functions also reorder the levels of factor port
+#'
+#' @param dataframe the sacrois dataframe loaded
+#' @param raw_data this parameters is used to specify particular operations
+#' to make according to sar_med and dorade_med.
+#' For example, renaming and reordering port is done only for sar_deb
+#' @param temps dataframe df_annee_temps
+#'
+#' @return
+#' This function returns a clean dataframe
+#' 
+#' 
+change_capture <- function(dataframe, raw_data, temps){
   
-  dataframe <- data$capture
-  
-  temps <- data$annee_trim
-  
-  
-  
+  # Changing encoding
   dataframe[,2:13] <- as.data.frame (apply(dataframe[,2:13], 2, function(colonne){
-    colonne <- iconv(colonne, from = "UTF-8", to = "LATIN1")})) # Change encoding 
+    colonne <- iconv(colonne, from = "UTF-8", to = "LATIN1")})) 
   
-  
-  # In integer
+  # Changing temporal variable class to integer
   dataframe$TRIMESTRE <- as.integer(dataframe$TRIMESTRE)
   dataframe$ANNEE <- as.integer(dataframe$ANNEE)
   
+  # Changing port variable class to factor 
   dataframe$PORT_EXP_LIB = as.factor(dataframe$PORT_EXP_LIB)
-
   
-  # In factror
-  if(raw_data=="sar_med"){
-    
-    
-    
+  # For sar_med data, reordering port from Ouest to Est
+  if(raw_data == "sar_med"){
+    # Changind order of levels 
     dataframe$PORT_EXP_LIB <- factor(dataframe$PORT_EXP_LIB, 
                                    levels = c(
                                      "Etang de Bages-Sigean, Peyriac de mer",
@@ -143,22 +155,16 @@ change_capture <- function(data, raw_data){
                                    ))
     
     
-  
-    
-  
-    
-    
     
   } # End sar_med
   
   
-  if(raw_data=="dorade_med"){
-    
+  # No treatment for ports with dorade_med data
+  if(raw_data == "dorade_med"){
     
   } # End dorade_med
   
-  
-  # Join data with annee
+  # Joining data with annee (adding TEMP variable)
   dataframe$annee_mois <- paste0(dataframe$ANNEE, "_", dataframe$TRIMESTRE)
   temps$annee_mois <- paste0(temps$ANNEE,"_",temps$TRIMESTRE)
   
@@ -166,5 +172,4 @@ change_capture <- function(data, raw_data){
   
   return(dataframe)
   
-
 }

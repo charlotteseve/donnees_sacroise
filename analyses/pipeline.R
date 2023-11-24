@@ -8,13 +8,19 @@ tar_source()
 # Creating pipeline
 list(
   
-  # download data
+  tar_target(raw_data, "sar_med"),
   
+  # download data
+  tar_target(data, ld_data(raw_data)),
   
   # change encoding
+  tar_target(data_clean, change_capture(data, raw_data)),
   
+  # Add metier information
+  tar_target(data_clean_metier, add_metier(data_clean)),
   
-  
-  
+  # Make graph
+  tar_quarto(graph, ".md")
+
   
 )
