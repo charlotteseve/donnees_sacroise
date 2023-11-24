@@ -20,7 +20,7 @@ list(
   tar_target(data_clean_metier, add_metier(data_clean)),
   
   # Make graph
-  tar_quarto(graph, ".md")
+  tar_quarto(graph, "pres.qmd")
 
   
 )
