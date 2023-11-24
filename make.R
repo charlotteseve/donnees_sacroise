@@ -42,15 +42,17 @@
 
 # workflow ----
 
+# install dependencies listed in DESCRIPTION.R
+devtools::install_deps(upgrade="never")
+
+# Load project addins (R functions and packages)
 devtools::load_all(here::here())
 
 # Configure target for this project
 targets::tar_config_set(script = "analyses/pipeline.R",
                         store = "outputs/pipeline")
 
-targets::tar_visnetwork(targets_only = TRUE)
+targets::tar_visnetwork() # targets_only = TRUE
 targets::tar_make()
 
-
-load_data()
 

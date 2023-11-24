@@ -8,13 +8,14 @@ tar_source()
 # Creating pipeline
 list(
   
+  tar_target(raw_data, "sar_med"),
   # download data
   
+  tar_target(data, ld_data(raw_data))
   
   # change encoding
   
-  
-  
+
   
   
 )
