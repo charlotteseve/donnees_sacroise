@@ -1,5 +1,5 @@
 add_metier <- function(data_clean){
-  
+
   # Studied metiers
   vect_met <- c("GNC", "GNS", "GTN", "GTR", "LLS", "LN", "OTB", "OTT")
   
@@ -13,8 +13,13 @@ add_metier <- function(data_clean){
     }
     else{}
     }
-      
-  # renaming met in data_clean
-  data_clean$met <- ifelse(data_clean$met %in% vect_met, data$met, "Autre") 
+
+  # On garde les métiers d'intérêt dans MET
+  data_clean$met <- ifelse(data_clean$met %in% vect_met, data_clean$met, "autre")
+  # si MET est dans Vect, alors on met MET --> sinon on met "Autre"
   
+  data_clean_metier <- data_clean
+ 
+  return(data_clean_metier)
+   
 }

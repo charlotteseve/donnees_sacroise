@@ -24,7 +24,7 @@ ld_data <- function(raw_data){
     df_ANNEE_TEMP <- read.csv2('data/sacrois/ANNEE_TRIM_TEMPS.csv') # annee
     ports_long <- read.csv2('data/sacrois/ports_long.csv') # temps
     
-    return(list(capture = df_obsDeb, effort = df_effDeb, annee = df_ANNEE_TEMP, ports = ports_long))
+    return(list(capture = df_obsDeb, effort = df_effDeb, annee_trim = df_ANNEE_TEMP, ports = ports_long))
     
   } # End sar_med
   
@@ -41,7 +41,7 @@ ld_data <- function(raw_data){
     # return data, a list of 4 dataframes
     return(list(capture = ,
                 effort =,
-                annee =,
+                annee_trim =,
                 ports =))
     
   } # End Dorade

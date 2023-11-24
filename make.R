@@ -26,6 +26,7 @@
 # usethis::use_r("change_capture")
 # usethis::use_r("change_effort")
 # usethis::use_r("add_metier")
+# usethis::use_r("make_graph")
 
 
 # Development commands----
