@@ -14,10 +14,10 @@ list(
   tar_target(data, ld_data(raw_data)),
   
   # change encoding
-  tar_target(data_clean, change_capture(data$capture, "sar_med", temps = data$annee_trim)),
+  tar_target(data_clean, change_capture(data, raw_data)),
   
   # Add metier information
-  tar_target(data_clean_metier, metiers(data_clean))
+  tar_target(data_clean_metier, add_metier(data_clean))
 
   
 
