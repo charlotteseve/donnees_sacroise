@@ -9,11 +9,12 @@ tar_source()
 list(
   
   tar_target(raw_data, "sar_med"),
-  # download data
   
-  tar_target(data, ld_data(raw_data))
+  # download data
+  tar_target(data, ld_data(raw_data)),
   
   # change encoding
+  tar_target(data_clean, change_capture(data$capture, "sar_med"))
   
 
   
