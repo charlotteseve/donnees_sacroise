@@ -1,0 +1,274 @@
+---
+title: "Exploration of fisheries dataset"
+subtitle: "Reproducible research in numerical ecology"
+author:
+  - name: "Charlotte Sève, Dominique Pelletier, Maël Gernez, Aurélien Favreau"
+    affiliations: "DECOD - IFREMER"
+date: "2023-11-24"
+date-format: long
+format:
+  revealjs:
+    theme: night
+    transition: slide
+    background-transition: fade
+    scrollable: true
+    css: assets/custom.css
+    chalkboard: true
+slide-number: true
+self-contained: false
+smaller: false
+---
+# Our project
+
+## Workflow
+::: {.callout-important style="font-size: 70%;"}
+# Objectif
+Explore and create a Sacrois dataset collaborating between two Ifremer sites.
+
+*Sacrois data*: Crossing of activity, catches and selling data of seafood.
+:::
+
+## Workflow
+:::fragment
+![](img/test4.png){style="text-align: center;" fig-align="center" width="100%"}
+:::
+
+
+# Used tools
+
+## Compendium
+
+## Github
+![](img/github.png){.absolute top=10 right=50 width="350" height="150"}
+
+![](img/branch.png){.absolute top=300 right=0 width="1600" height="300"}
+
+## Git x GitHub
+
+![](img/git.png){.absolute top=10 right=50 width="350" height="150"}
+
+## Targets package
+![](img/targets.png){.absolute top=10 right=50 width="350" height="150"}
+
+## Quarto 
+![](img/QUARTO.png){.absolute top=10 right=50 width="350" height="150"}
+
+
+# Difficulties
+
+## Difficulties
+::: incremental
+1.  Difficulty 1
+2.  Difficulty 2
+3.  Difficulty 3
+:::
+
+# Results
+
+
+# Our secret
+
+## Dataset download
+
+``` r
+ld_data(){
+  df_obsDeb <<- read.csv2('SACROIS_obsDeb_Sars_2018_2022_GSA07.csv')
+  df_effDeb <<- read.csv2('data/sacrois/SACROIS_obsDeb_effort_Sars_2018_2022_GSA07.csv')
+  df_ANNEE_TEMP <<- read.csv2('data/sacrois/ANNEE_TRIM_TEMPS.csv')
+  ports_long <<- read.csv2('data/sacrois/ports_long.csv')
+}
+```
+
+::: fragment
+![](img/giphy.gif){style="text-align: center;" fig-align="center;" width="80%"}
+:::
+
+# Thank you for your attention and this wonderful week
+
+
+## Mettre une animation {auto-animate="true"}
+
+Quarto is a new, open-source, scientific and technical publishing system
+
+![](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/c2ef45f1-4a68-4c7a-a43f-bdcf0f90e104.png?h=57404b88e9bf43eea2d2b57c71b13303)
+
+##  {auto-animate="true"}
+
+Quarto is a new, open-source, scientific and technical publishing system
+
+![](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/c2ef45f1-4a68-4c7a-a43f-bdcf0f90e104.png?h=57404b88e9bf43eea2d2b57c71b13303)
+
+Quarto is a software (command line interface) that renders plain text formats such as `.qmd`, `.rmd`, `.md` into static PDF/Word/HTML reports, books, websites, presentations and more
+
+## Mettre un script R avec menu deroulant
+
+This is a Quarto file -- a plain text file that has the extension `.qmd`:
+
+```{r echo = FALSE, comment = ""}
+cat(readr::read_file("diamond-sizes.qmd"))
+```
+
+## Mettre animation bullet points
+
+It contains three important types of content:
+
+::: incremental
+1.  An (optional) **YAML header** surrounded by `---`s.
+2.  **Chunks** of R code surrounded by ```` ``` ````.
+3.  Text mixed with simple text formatting like `# heading` and `_italics_`.
+:::
+
+## Fragments de code
+
+::: incremental
+-   citations: bibliography files (bibtex), bibliography style (csl)
+
+::: fragment
+``` yaml
+---
+title: "My Document"
+bibliography: references.bib
+csl: nature.csl
+---
+
+She said "[...] but you can't stop the future" [@Sp231992].
+```
+:::
+
+-   cross-references for figures (`fig-`), tables (`tbl-`), sections (`sec-`), equations (`eq-`), (`thm-`), etc
+
+::: fragment
+``` yaml
+## Introduction {#sec-introduction}
+
+See @sec-introduction for additional context.
+```
+:::
+:::
+
+## Inserer petites images
+
+::: {layout="[1, 20]"}
+![](https://quarto.org/docs/presentations/revealjs/demo/images/presentation-menu.png){width="41"}
+
+Toggle the slide menu with the menu button to go to other slides and access presentation tools. Some other tools like **PDF Export** in this settings.
+:::
+
+. . .
+
+::: {layout="[1, 20]"}
+![](https://quarto.org/docs/presentations/revealjs/demo/images/presentation-chalkboard.png){width="41"}
+
+Use the chalkboard button to toggle the chalkboard.
+:::
+
+. . .
+
+::: {layout="[1, 20]"}
+![](https://quarto.org/docs/presentations/revealjs/demo/images/presentation-notes-canvas.png){width="41"}
+
+Use the notes canvas button to toggle drawing on top of the current slide.
+:::
+
+## Inserer des notes
+
+``` yaml
+::: {.callout-note}
+Five types of callouts: `note`, `warning`, 
+`important`, `tip`, and `caution`.
+:::
+```
+
+<br/><br/>
+
+::: callout-note
+Five types of callouts: **`note`**, `warning`, `important`, `tip` and `caution`.
+:::
+
+::: callout-tip
+Five types of callouts: `note`, `warning`, `important`, **`tip`** and `caution`.
+:::
+
+## Faire des diagrammes
+
+```{{{mermaid}}}
+flowchart LR
+  A[Hard edge] --> B(Round edge)
+  B --> C{Decision}
+  C --> D[Result one]
+  C --> E[Result two]
+```
+
+<br/><br/>
+
+```{mermaid}
+flowchart LR
+  A[Hard edge] --> B(Round edge)
+  B --> C{Decision}
+  C --> D[Result one]
+  C --> E[Result two]
+```
+
+## Inserer des videos
+
+``` {.default shortcodes="false"}
+{{< video https://www.youtube.com/watch?v=KPXFs2YU3F4>}}
+```
+
+[{{< video https://www.youtube.com/watch?v=KPXFs2YU3F4 width="700" height="500" title="Future Maore Reefs" start="423">}}]{.center}
+
+## Carte leaflets
+
+Native support for [JupyterWidgets](https://quarto.org/docs/interactive/widgets/jupyter.html) (Jupyter) and [htmlwidgets](https://quarto.org/docs/interactive/widgets/htmlwidgets.html) (R/knitr)
+
+::: {style="font-size: 0.9em"}
+```{r}
+#| echo: fenced
+#| output-location: column-fragment
+library(leaflet)
+leaflet(width = "480px") %>%
+  addTiles() %>%
+  addMarkers(
+    lat=43.61270525357229, 
+    lng=3.8733237524215443, 
+    popup="We are here!"
+  )
+```
+:::
+
+## Tableaux
+
+\`\`\``Let's have a look at`iris\`
+
+. . . Let's have a look at `iris`
+
+. . .
+
+```{r}
+head(iris) |> knitr::kable()
+```
+
+## Script + graph associe
+
+::: {style="font-size: 0.8em"}
+```{r}
+#| echo: fenced
+#| code-line-numbers: "|3"
+#| output-location: column
+
+library(ggplot2)
+
+ggplot(mtcars, aes(hp, mpg)) +
+  geom_point() +
+  geom_smooth(formula = y ~ x, method = "loess")
+```
+:::
+
+## Mettre des liens
+
+<br/><br/>
+
+-   [Quarto documentation](https://quarto.org/)
+-   [Hadley's intro to Quarto](https://r4ds.hadley.nz/quarto)
+-   [Awesome Quarto](https://github.com/mcanouil/awesome-quarto)
+-   [La présentation originale de Cédric Midoux](https://cedric.midoux.pages.mia.inra.fr/slides/posts/2023-04-13_quarto)
