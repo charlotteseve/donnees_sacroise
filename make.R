@@ -23,13 +23,9 @@
 
 # Create R functions in the R repository
 # usethis::use_r("load_data")
-<<<<<<< HEAD
 # usethis::use_r("change_capture")
 # usethis::use_r("change_effort")
-=======
-# usethis::use_r("change_encoding")
-# usethis::use_r("metiers")
->>>>>>> f3d6cb11468a0ae6c485a6adb5d8c113929ee167
+# usethis::use_r("add_metier")
 
 
 # Development commands----

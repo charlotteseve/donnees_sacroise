@@ -11,8 +11,6 @@
 #' @return this function returns four dataframes: capture, effort, annee, ports
 #' 
 #' 
-#' 
-#' 
 ld_data <- function(raw_data){
   
   #targets::tar_load("raw_data")
