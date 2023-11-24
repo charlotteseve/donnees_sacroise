@@ -14,8 +14,7 @@ change_capture <- function(dataframe, raw_data){
 
   
   # In factror
-  if(raw_data=="sar_med"){
-    
+  if(raw_data == "sar_med"){
     
     
     dataframe$PORT_EXP_LIB <- factor(dataframe$PORT_EXP_LIB, 
@@ -148,7 +147,7 @@ change_capture <- function(dataframe, raw_data){
   } # End sar_med
   
   
-  if(raw_data=="dorade_med"){
+  if(raw_data == "dorade_med"){
     
     
   } # End dorade_med

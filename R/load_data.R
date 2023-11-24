@@ -40,6 +40,7 @@ ld_data <- function(raw_data){
     df_ANNEE_TEMP <-read.csv2('data/sacrois/ANNEE_TRIM_TEMPS.csv') # annee
     ports_long <-read.csv2('data/sacrois/ports_long.csv') # ports
     
+    # return data, a list of 4 dataframes
     return(list(capture = ,
                 effort =,
                 annee =,
