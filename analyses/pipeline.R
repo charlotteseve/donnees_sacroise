@@ -17,10 +17,10 @@ list(
   tar_target(data_clean, change_capture(data, raw_data)),
   
   # Add metier information
-  tar_target(data_clean_metier, add_metier(data_clean))
-
+  tar_target(data_clean_metier, add_metier(data_clean)),
   
+  # Make graph
+  tar_quarto(graph, ".md")
 
-  
   
 )
