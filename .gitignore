@@ -1,11 +1,9 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
 .Ruserdata
 *.Rproj
 #renv
 renv/
 .Rprofile
 .Rbuildignore
-data/
-analyses/
